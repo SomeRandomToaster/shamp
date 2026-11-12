@@ -1,0 +1,9 @@
+<library path="hexa_hardware">
+  <class name="hexa_hardware/HexaHardwareInterface"
+         type="hexa_hardware::HexaHardwareInterface"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Hardware interface for hexapod robot with ESP32 communication
+    </description>
+  </class>
+</library>

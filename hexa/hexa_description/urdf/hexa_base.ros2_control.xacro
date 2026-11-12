@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <xacro:macro name="hexa_ros2_control" params="use_mock_hardware">
+        <ros2_control name="HexaBaseHardwareInterface" type="system">
+
+            <xacro:if value="${use_mock_hardware}">
+                <hardware>
+                    <plugin>mock_components/GenericSystem</plugin>
+                    <param name="calculate_dynamics">true</param>
+                </hardware>
+            </xacro:if>
+
+            <xacro:unless value="${use_mock_hardware}">
+                <hardware>
+                    <plugin>hexa_hardware/HexaHardwareInterface</plugin>
+                    <param name="topic_name">servo_cmd_raw</param>
+                </hardware>
+            </xacro:unless>
+
+            <xacro:macro name="leg_joints_interfaces" params="index">
+                <joint name="body_to_coxa_${index}_joint">
+                    <command_interface name="position"/>
+                    <state_interface name="position"/>
+                </joint>
+                <joint name="coxa_to_tibia_${index}_joint">
+                    <command_interface name="position"/>
+                    <state_interface name="position"/>
+                </joint>
+                <joint name="tibia_to_femur_${index}_joint">
+                    <command_interface name="position"/>
+                    <state_interface name="position"/>
+                </joint>
+            </xacro:macro>
+
+            <xacro:leg_joints_interfaces index="fr" />
+            <xacro:leg_joints_interfaces index="cr" />
+            <xacro:leg_joints_interfaces index="br" />
+            <xacro:leg_joints_interfaces index="bl" />
+            <xacro:leg_joints_interfaces index="cl" />
+            <xacro:leg_joints_interfaces index="fl" />
+        
+        </ros2_control>
+    </xacro:macro>
+</robot>

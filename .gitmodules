@@ -1,0 +1,6 @@
+[submodule "champ"]
+	path = champ
+	url = https://github.com/SomeRandomToaster/champ
+[submodule "hexa/micro-ROS-Agent"]
+	path = hexa/micro-ROS-Agent
+	url = https://github.com/micro-ROS/micro-ROS-Agent

@@ -1,0 +1,20 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 50
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+    servo_controller:
+      type: position_controllers/JointGroupPositionController
+
+servo_controller:
+  ros__parameters:
+    joints: [
+      "body_to_coxa_fr_joint", "coxa_to_tibia_fr_joint", "tibia_to_femur_fr_joint",
+      "body_to_coxa_cr_joint", "coxa_to_tibia_cr_joint", "tibia_to_femur_cr_joint",
+      "body_to_coxa_br_joint", "coxa_to_tibia_br_joint", "tibia_to_femur_br_joint",
+      "body_to_coxa_bl_joint", "coxa_to_tibia_bl_joint", "tibia_to_femur_bl_joint",
+      "body_to_coxa_cl_joint", "coxa_to_tibia_cl_joint", "tibia_to_femur_cl_joint",
+      "body_to_coxa_fl_joint", "coxa_to_tibia_fl_joint", "tibia_to_femur_fl_joint"
+    ]

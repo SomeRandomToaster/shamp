@@ -1,0 +1,24 @@
+<launch>
+    <let name="urdf_path" 
+         value="$(find-pkg-share hexa_description)/urdf/hexa.urdf.xacro" />
+    <let name="rviz_config_path"
+         value="$(find-pkg-share hexa_description)/rviz/urdf_config.rviz" />
+
+    <node pkg="robot_state_publisher" exec="robot_state_publisher">
+        <param name="robot_description"
+               value="$(command 'xacro $(var urdf_path)')" />
+    </node>
+
+    <node pkg="controller_manager" exec="ros2_control_node">
+        <param from="$(find-pkg-share hexa_bringup)/config/hexa_controllers.yaml"/>
+    </node>
+
+    <node pkg="controller_manager" exec="spawner" args="joint_state_broadcaster"/>
+    <node pkg="controller_manager" exec="spawner" args="servo_controller"/>
+
+    <executable cmd="ros2 run micro_ros_agent micro_ros_agent udp4 -p 8888" output="screen" shell="true"/>  
+
+    // Joy control
+    <node pkg="joy" exec="joy_node" />
+    <node pkg="hexa_bringup" exec="joy_to_cmd" />
+</launch>
