@@ -5,5 +5,5 @@ This project is an adaptation of the CHAMP package for multi-legged spider-like 
 ## Project structure
 For now the project has three main structural parts:
 - Multi-legged controller (**shamp** directory)
-- CHAMP fork with some quadruped-specific modules removed (**champ** directory)
+- CHAMP core library fork with some common entities separated (**libchamp** directory)
 - Controller implementation for a hexapod robot (**hexa** directory)
