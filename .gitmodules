@@ -1,6 +1,6 @@
 [submodule "hexa/micro-ROS-Agent"]
 	path = hexa/micro-ROS-Agent
 	url = https://github.com/micro-ROS/micro-ROS-Agent
-[submodule "libchamp"]
-	path = libchamp
-	url = git@github.com:SomeRandomToaster/libchamp.git
+[submodule "shamp/shamp/include/shamp"]
+	path = shamp/shamp/include/shamp
+	url = git@github.com:SomeRandomToaster/libshamp.git
