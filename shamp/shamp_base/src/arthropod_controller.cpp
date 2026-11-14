@@ -10,7 +10,9 @@ ArthropodController::ArthropodController():
         "quadruped_controller_node",
             rclcpp::NodeOptions()
                 .allow_undeclared_parameters(true)
-                .automatically_declare_parameters_from_overrides(true))
+                .automatically_declare_parameters_from_overrides(true)),
+    n_legs_((this->get_parameter("n_legs", n_legs_), n_legs_)),
+    base_(n_legs_)
 {
     std::string joint_control_topic = "servo_controller/commands";
     std::string urdf = "";
@@ -39,6 +41,9 @@ ArthropodController::ArthropodController():
     {
         joint_commands_publisher_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>(joint_control_topic, 10);
     }
+
+    base_.setGaitConfig(gait_config_);
+    //shamp::URDF::loadFromString(base_, this->get_node_parameters_interface(), urdf);
 
     std::chrono::milliseconds period(static_cast<int>(1000/loop_rate));
     loop_timer_ = this->create_wall_timer(
@@ -77,5 +82,5 @@ void ArthropodController::cmdPoseCallback_(const geometry_msgs::msg::Pose::Share
 
 void ArthropodController::controlLoop_()
 {
-    RCLCPP_INFO(rclcpp::get_logger("HexapopController"), "test");
+    RCLCPP_INFO(rclcpp::get_logger(kLoggerPrefix), "test with %u legs", n_legs_);
 }

@@ -1,6 +1,7 @@
 #ifndef ARTHROPOD_CONTROLLER_H
 #define ARTHROPOD_CONTROLLER_H
 
+#include <shamp/arthropod_base/arthropod_base.h>
 #include <shamp/arthropod_base/arthropod_components.h>
 #include <shamp/common/common_components.h>
 
@@ -11,6 +12,10 @@
 
 class ArthropodController : public rclcpp::Node
 {
+    constexpr static char kLoggerPrefix[] = "ArthropodController";
+
+    unsigned n_legs_;
+
     rclcpp::Subscription<geometry_msgs::msg::Twist>::SharedPtr cmd_vel_subscription_;
     rclcpp::Subscription<geometry_msgs::msg::Pose>::SharedPtr cmd_pose_subscription_;
 
@@ -20,10 +25,13 @@ class ArthropodController : public rclcpp::Node
 
     champ::Velocities req_vel_;
     champ::Pose req_pose_;
-
+    
     shamp::ArthropodGaitConfig gait_config_;
 
+    shamp::ArthropodBase base_;
+
     bool publish_joint_control_;
+
 
     void controlLoop_();
 
