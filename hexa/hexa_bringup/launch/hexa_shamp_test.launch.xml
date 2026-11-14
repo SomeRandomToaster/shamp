@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="shamp_base" exec="arthropod_controller_node">
+        <param name="n_legs" value="6"/>
+    </node>
+</launch>
