@@ -1,0 +1,43 @@
+/**:
+  ros__parameters:
+    n_legs: 6
+    links_map:
+      base_link: "body_link"
+      leg_names:
+        - front_right
+        - center_right
+        - back_right
+        - back_left
+        - center_left
+        - front_left
+
+      front_right:
+        - coxa_fr_link
+        - tibia_fr_link
+        - femur_fr_link
+        - endpoint_fr_link
+      center_right:
+        - coxa_cr_link
+        - tibia_cr_link
+        - femur_cr_link
+        - endpoint_cr_link
+      back_right:
+        - coxa_br_link
+        - tibia_br_link
+        - femur_br_link
+        - endpoint_br_link
+      back_left:
+        - coxa_bl_link
+        - tibia_bl_link
+        - femur_bl_link
+        - endpoint_bl_link
+      center_left:
+        - coxa_cl_link
+        - tibia_cl_link
+        - femur_cl_link
+        - endpoint_cl_link
+      front_left:
+        - coxa_fl_link
+        - tibia_fl_link
+        - femur_fl_link
+        - endpoint_fl_link

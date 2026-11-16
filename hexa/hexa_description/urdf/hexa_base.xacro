@@ -59,10 +59,23 @@
         </link>
     </xacro:macro>
 
+    <xacro:macro name="endpoint_link" params="link_name">
+        <link name="${link_name}">
+             <visual>
+                <geometry>
+                    <box size="20e-3 20e-3 20e-3" />
+                </geometry>
+                <origin xyz="0 0 0" rpy="0 0 0" />
+            <material name="red" />
+        </visual>
+        </link>
+    </xacro:macro>
+
     <xacro:macro name="leg" params="index angle">
          <xacro:coxa_link link_name="coxa_${index}_link"/>
          <xacro:tibia_link link_name="tibia_${index}_link"/>
          <xacro:femur_link link_name="femur_${index}_link"/>
+         <xacro:endpoint_link link_name="endpoint_${index}_link"/>
 
          <joint name="body_to_coxa_${index}_joint" type="revolute">
             <xacro:property name="body_radius" value="140.787e-3" />
@@ -87,6 +100,13 @@
             <child link="femur_${index}_link" />
             <origin xyz="0 110e-3 0" rpy="${-8.7 * pi / 180} 0 0"/>
             <limit lower="${-pi / 2}" upper="${pi / 2}" effort="2.941995" velocity="${2 * pi / 1.2}"/>
+         </joint>
+
+         <joint name="femur_to_endpoint_${index}_joint" type="fixed">
+
+            <parent link="femur_${index}_link" />
+            <child link="endpoint_${index}_link" />
+            <origin xyz="0 -25.7e-3 168e-3" rpy="${8.7 * pi / 180} 0 0"/>
          </joint>
     </xacro:macro>
 
