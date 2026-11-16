@@ -1,5 +1,7 @@
 #include "arthropod_base/arthropod_controller.h"
 
+#include <shamp/utils/urdf_loader.h>
+
 #include <tf2/LinearMath/Quaternion.hpp>
 #include <tf2/LinearMath/Matrix3x3.hpp>
 
@@ -43,7 +45,7 @@ ArthropodController::ArthropodController():
     }
 
     base_.setGaitConfig(gait_config_);
-    //shamp::URDF::loadFromString(base_, this->get_node_parameters_interface(), urdf);
+    shamp::URDF::loadFromString(base_, this->get_node_parameters_interface(), urdf);
 
     std::chrono::milliseconds period(static_cast<int>(1000/loop_rate));
     loop_timer_ = this->create_wall_timer(
@@ -82,5 +84,5 @@ void ArthropodController::cmdPoseCallback_(const geometry_msgs::msg::Pose::Share
 
 void ArthropodController::controlLoop_()
 {
-    RCLCPP_INFO(rclcpp::get_logger(kLoggerPrefix), "test with %u legs", n_legs_);
+    //RCLCPP_INFO(rclcpp::get_logger(kLoggerPrefix), "test with %u legs", n_legs_);
 }

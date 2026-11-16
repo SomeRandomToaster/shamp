@@ -1,5 +1,12 @@
 <launch>
+    <let name="urdf_path" 
+        value="$(find-pkg-share hexa_description)/urdf/hexa.urdf.xacro" />
+    <let name="links_config_path"
+        value="$(find-pkg-share hexa_bringup)/config/hexa_links.yaml" />
+
+    
     <node pkg="shamp_base" exec="arthropod_controller_node">
-        <param name="n_legs" value="6"/>
+        <param name="urdf" value="$(command 'xacro $(var urdf_path) use_mock_hardware:=true')"/>
+        <param from="$(var links_config_path)"/>
     </node>
-</launch>
+</launch> 
