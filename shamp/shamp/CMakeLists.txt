@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.8)
 project(shamp)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
+  add_compile_options(-Wall -Wextra -Wpedantic -Wno-deprecated-copy)
 endif()
 
 # find dependencies
@@ -30,4 +30,5 @@ install(DIRECTORY include/
 )
 
 ament_export_include_directories(include)
+ament_export_include_directories(include/shamp)
 ament_package()
