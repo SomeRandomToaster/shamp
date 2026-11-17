@@ -7,15 +7,20 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(tf2 REQUIRED)
 
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_executable(joy_to_cmd src/joy_to_cmd.cpp)
-ament_target_dependencies(joy_to_cmd rclcpp sensor_msgs std_msgs)
+ament_target_dependencies(joy_to_cmd geometry_msgs rclcpp sensor_msgs std_msgs)
+
+add_executable(joy_to_pose src/joy_to_pose.cpp)
+ament_target_dependencies(joy_to_pose geometry_msgs rclcpp sensor_msgs geometry_msgs tf2)
 
 install(
   DIRECTORY config launch
@@ -23,7 +28,7 @@ install(
 )
 
 install(
-  TARGETS joy_to_cmd
+  TARGETS joy_to_cmd joy_to_pose 
   DESTINATION lib/${PROJECT_NAME}
 )
 
