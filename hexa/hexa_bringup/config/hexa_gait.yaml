@@ -1,0 +1,5 @@
+/**:
+  ros__parameters:
+    gait:
+      nominal_height: 0.075
+      stance_radius: 0.135
