@@ -1,4 +1,4 @@
-#include "arthropod_base/arthropod_controller.h"
+#include "shamp_base/arthropod_controller.h"
 
 #include <shamp/utils/urdf_loader.h>
 
@@ -9,12 +9,17 @@
 
 ArthropodController::ArthropodController():
     Node(
-        "quadruped_controller_node",
+        "arthropod_controller_node",
             rclcpp::NodeOptions()
                 .allow_undeclared_parameters(true)
                 .automatically_declare_parameters_from_overrides(true)),
     n_legs_((this->get_parameter("n_legs", n_legs_), n_legs_)),
-    base_(n_legs_)
+    base_(n_legs_),
+    body_controller_(base_),
+    kinematics_(base_),
+    target_foot_positions_(n_legs_),
+    target_joint_positions_(n_legs_ * (base_.legs[0].joint_chain.size() - 1)),
+    publish_joint_control_(true)
 {
     std::string joint_control_topic = "servo_controller/commands";
     std::string urdf = "";
@@ -27,6 +32,7 @@ ArthropodController::ArthropodController():
     this->get_parameter("gait.com_x_translation",      gait_config_.com_x_translation);
     this->get_parameter("gait.swing_height",           gait_config_.swing_height);
     this->get_parameter("gait.stance_depth",           gait_config_.stance_depth);
+    this->get_parameter("gait.stance_radius",          gait_config_.stance_radius);
     this->get_parameter("gait.stance_duration",        gait_config_.stance_duration);
     this->get_parameter("gait.nominal_height",         gait_config_.nominal_height);
     this->get_parameter("publish_joint_control",       publish_joint_control_);
@@ -38,13 +44,15 @@ ArthropodController::ArthropodController():
         "cmd_vel", 10, std::bind(&ArthropodController::cmdVelCallback_, this,  std::placeholders::_1));
     cmd_pose_subscription_ = this->create_subscription<geometry_msgs::msg::Pose>(
         "cmd_pose", 1,  std::bind(&ArthropodController::cmdPoseCallback_, this,  std::placeholders::_1));
+    cmd_stan_rad_subscription_ = this->create_subscription<std_msgs::msg::Float64>(
+        "cmd_stan_rad", 1,  std::bind(&ArthropodController::cmdStanRadCallback_, this,  std::placeholders::_1));
 
     if(publish_joint_control_)
     {
-        joint_commands_publisher_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>(joint_control_topic, 10);
+        joint_commands_publisher_ = this->create_publisher<std_msgs::msg::Float64MultiArray>(joint_control_topic, 10);
     }
 
-    base_.setGaitConfig(gait_config_);
+    base_.setGaitConfig(&gait_config_);
     shamp::URDF::loadFromString(base_, this->get_node_parameters_interface(), urdf);
 
     std::chrono::milliseconds period(static_cast<int>(1000/loop_rate));
@@ -84,5 +92,23 @@ void ArthropodController::cmdPoseCallback_(const geometry_msgs::msg::Pose::Share
 
 void ArthropodController::controlLoop_()
 {
-    //RCLCPP_INFO(rclcpp::get_logger(kLoggerPrefix), "test with %u legs", n_legs_);
+    body_controller_.poseCommand(target_foot_positions_, req_pose_);
+    kinematics_.inverse(target_joint_positions_, target_foot_positions_);
+
+    publishJoints_();
 }
+
+void ArthropodController::publishJoints_()
+{
+    if(publish_joint_control_)
+    {
+        auto message = std_msgs::msg::Float64MultiArray();
+        message.data = target_joint_positions_;
+        joint_commands_publisher_->publish(message);
+    }
+}
+
+ void ArthropodController::cmdStanRadCallback_(const std_msgs::msg::Float64::SharedPtr msg)
+ {
+    gait_config_.stance_radius = msg->data;
+ }

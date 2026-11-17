@@ -1,4 +1,4 @@
-#include "arthropod_base/arthropod_controller.h"
+#include "shamp_base/arthropod_controller.h"
 
 int main(int argc, char** argv )
 {
