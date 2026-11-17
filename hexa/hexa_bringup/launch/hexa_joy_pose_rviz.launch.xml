@@ -1,0 +1,35 @@
+<launch>
+    <let name="urdf_path" 
+        value="$(find-pkg-share hexa_description)/urdf/hexa.urdf.xacro" />
+    <let name="links_config_path"
+        value="$(find-pkg-share hexa_bringup)/config/hexa_links.yaml" />
+    <let name="gait_config_path"
+        value="$(find-pkg-share hexa_bringup)/config/hexa_gait.yaml" />
+    <let name="rviz_config_path"
+         value="$(find-pkg-share hexa_description)/rviz/urdf_config.rviz" />
+
+    
+    <node pkg="shamp_base" exec="arthropod_controller_node">
+        <param name="urdf" value="$(command 'xacro $(var urdf_path) use_mock_hardware:=true')"/>
+        <param from="$(var links_config_path)"/>
+        <param from="$(var gait_config_path)"/>
+    </node>
+
+    <node pkg="robot_state_publisher" exec="robot_state_publisher">
+        <param name="robot_description"
+               value="$(command 'xacro $(var urdf_path) use_mock_hardware:=true')" />
+    </node>
+
+    <node pkg="controller_manager" exec="ros2_control_node">
+        <param from="$(find-pkg-share hexa_bringup)/config/hexa_controllers.yaml"/>
+    </node>
+
+    <node pkg="controller_manager" exec="spawner" args="joint_state_broadcaster"/>
+    <node pkg="controller_manager" exec="spawner" args="servo_controller"/>
+    <node pkg="rviz2" exec="rviz2" output="screen" 
+          args="-d $(var rviz_config_path)" />
+
+    // Joy control
+    <node pkg="joy" exec="joy_node" />
+    <node pkg="hexa_bringup" exec="joy_to_pose" />
+</launch> 
