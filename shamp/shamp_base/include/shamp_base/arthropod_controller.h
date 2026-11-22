@@ -6,6 +6,7 @@
 #include "body_controller/arthropod_body_controller.h"
 #include "common/common_components.h"
 #include "kinematics/arthropod_kinematics.h"
+#include "leg_controller/arthropod_leg_controller.h"
 
 #include <geometry_msgs/msg/twist.hpp>
 #include <geometry_msgs/msg/pose.hpp>
@@ -26,6 +27,7 @@ class ArthropodController : public rclcpp::Node
     rclcpp::Publisher<std_msgs::msg::Float64MultiArray>::SharedPtr joint_commands_publisher_;
 
     rclcpp::TimerBase::SharedPtr loop_timer_;
+    rclcpp::Clock clock_;
 
     champ::Velocities req_vel_;
     champ::Pose req_pose_;
@@ -34,6 +36,7 @@ class ArthropodController : public rclcpp::Node
 
     shamp::ArthropodBase base_;
     shamp::ArthropodBodyController body_controller_;
+    shamp::ArthropodLegController leg_controller_;
     shamp::ArthropodKinematics kinematics_;
 
     std::vector<geometry::Transformation> target_foot_positions_;

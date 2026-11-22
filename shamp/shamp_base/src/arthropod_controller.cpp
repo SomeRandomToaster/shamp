@@ -7,6 +7,11 @@
 
 #include <functional>
 
+shamp::ArthropodPhaseGenerator::Time rosTimeToChampTime(const rclcpp::Time& time)
+{
+  return time.nanoseconds() / 1000ul;
+}
+
 ArthropodController::ArthropodController():
     Node(
         "arthropod_controller_node",
@@ -14,8 +19,10 @@ ArthropodController::ArthropodController():
                 .allow_undeclared_parameters(true)
                 .automatically_declare_parameters_from_overrides(true)),
     n_legs_((this->get_parameter("n_legs", n_legs_), n_legs_)),
+    clock_(*this->get_clock()),
     base_(n_legs_),
     body_controller_(base_),
+    leg_controller_(base_),
     kinematics_(base_),
     target_foot_positions_(n_legs_),
     target_joint_positions_(n_legs_ * (base_.legs[0].joint_chain.size() - 1)),
@@ -31,6 +38,7 @@ ArthropodController::ArthropodController():
     this->get_parameter("gait.max_angular_velocity_z", gait_config_.max_angular_velocity_z);
     this->get_parameter("gait.com_x_translation",      gait_config_.com_x_translation);
     this->get_parameter("gait.swing_height",           gait_config_.swing_height);
+    this->get_parameter("gait.swing_duration",         gait_config_.swing_duration);
     this->get_parameter("gait.stance_depth",           gait_config_.stance_depth);
     this->get_parameter("gait.stance_radius",          gait_config_.stance_radius);
     this->get_parameter("gait.stance_duration",        gait_config_.stance_duration);
@@ -93,8 +101,8 @@ void ArthropodController::cmdPoseCallback_(const geometry_msgs::msg::Pose::Share
 void ArthropodController::controlLoop_()
 {
     body_controller_.poseCommand(target_foot_positions_, req_pose_);
+    leg_controller_.velocityCommand(target_foot_positions_, req_vel_, rosTimeToChampTime(clock_.now()));
     kinematics_.inverse(target_joint_positions_, target_foot_positions_);
-
     publishJoints_();
 }
 
